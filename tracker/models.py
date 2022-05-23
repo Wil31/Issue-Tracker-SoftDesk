@@ -19,7 +19,8 @@ class Project(models.Model):
     )
 
     type = models.CharField(max_length=30, choices=TYPE_CHOICES, verbose_name='Type')
-    # author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL,
+                               on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title

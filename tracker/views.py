@@ -1,13 +1,11 @@
-from rest_framework.response import Response
-from rest_framework.views import APIView
+from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from tracker.models import Project
 from tracker.serializers import ProjectSerializer
 
 
-class ProjectAPIView(APIView):
+class ProjectViewset(ReadOnlyModelViewSet):
+    serializer_class = ProjectSerializer
 
-    def get(self, *args, **kwargs):
-        projects = Project.objects.all()
-        serializer = ProjectSerializer(projects, many=True)
-        return Response(serializer.data)
+    def get_queryset(self):
+        return Project.objects.filter(author=self.request.user)

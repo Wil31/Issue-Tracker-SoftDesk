@@ -4,7 +4,7 @@ from tracker.models import Project
 
 
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('title', 'description', 'type')
+    list_display = ('id', 'title', 'description', 'type', 'author')
 
 
 admin.site.register(Project, ProjectAdmin)
