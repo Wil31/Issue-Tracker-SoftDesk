@@ -54,3 +54,32 @@ class Contributor(models.Model):
 
     class Meta:
         unique_together = ("user", "project")
+
+
+class Issue(models.Model):
+    title = models.CharField(max_length=255, unique=True)
+    description = models.TextField(blank=True)
+    tag = models.CharField(max_length=255)
+    priority = models.CharField(max_length=255)
+    project = models.ForeignKey(Project,
+                                on_delete=models.CASCADE
+                                )
+    status = models.CharField(max_length=255)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL,
+                               on_delete=models.CASCADE
+                               )
+    # assignee = models.ForeignKey(settings.AUTH_USER_MODEL,
+    #                              on_delete=models.CASCADE
+    #                              )
+    created_time = models.DateTimeField(verbose_name='created time', auto_now_add=True)
+
+
+class Comment(models.Model):
+    description = models.TextField(blank=True)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL,
+                               on_delete=models.CASCADE
+                               )
+    issue = models.ForeignKey(Issue,
+                              on_delete=models.CASCADE
+                              )
+    created_time = models.DateTimeField(verbose_name='created time', auto_now_add=True)
