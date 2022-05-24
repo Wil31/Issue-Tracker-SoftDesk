@@ -16,9 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-from tracker.views import ProjectViewset
 from authentication.views import SignupViewset
+from tracker.views import ProjectViewset
 
 router = routers.SimpleRouter()
 
@@ -28,5 +29,7 @@ router.register('signup', SignupViewset, basename='signup')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
+    path('api/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/login/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/', include(router.urls))
 ]
