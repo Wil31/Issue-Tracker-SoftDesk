@@ -3,54 +3,42 @@ from django.db import models
 
 
 class Project(models.Model):
-    title = models.CharField(max_length=255, unique=True)
-    description = models.TextField(blank=True)
-
-    BACKEND = 'BACKEND'
-    FRONTEND = 'FRONTEND'
-    IOS = 'IOS'
-    ANDROID = 'ANDROID'
+    title = models.CharField(max_length=100, unique=True)
+    description = models.CharField(max_length=300)
 
     TYPE_CHOICES = (
-        (BACKEND, 'Back-end'),
-        (FRONTEND, 'Front-end'),
-        (IOS, 'iOS'),
-        (ANDROID, 'Android'),
+        ('BE', 'Back-end'),
+        ('FE', 'Front-end'),
+        ('IOS', 'IOS'),
+        ('ANDROID', 'Android'),
     )
 
-    type = models.CharField(max_length=30, choices=TYPE_CHOICES, verbose_name='Type')
-    author = models.ForeignKey(settings.AUTH_USER_MODEL,
-                               on_delete=models.CASCADE)
+    type = models.CharField(max_length=7, choices=TYPE_CHOICES)
+    author = models.ForeignKey(to=settings.AUTH_USER_MODEL,
+                               on_delete=models.RESTRICT)
 
     def __str__(self):
         return self.title
 
 
 class Contributor(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+    user = models.ForeignKey(to=settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE,
-                             related_name="user"
+                             related_name="user_contributor"
                              )
-    project = models.ForeignKey(Project,
+    project = models.ForeignKey(to=Project,
                                 on_delete=models.CASCADE,
-                                related_name="project"
+                                related_name="project_contributor"
                                 )
-    PERMISSION_CHOICES = ()
-    permission = models.CharField(max_length=30,
-                                  choices=PERMISSION_CHOICES,
-                                  verbose_name='Permission'
-                                  )
 
-    AUTHOR = 'AUTHOR'
-    CONTRIBUTOR = 'CONTRIBUTOR'
-    ROLE_CHOICES = (
-        (AUTHOR, 'Author'),
-        (CONTRIBUTOR, 'Contributor')
-    )
-    role = models.CharField(max_length=30,
-                            choices=ROLE_CHOICES,
-                            verbose_name='Role'
-                            )
+    # ROLE_CHOICES = (
+    #     ('AUTH', 'Author'),
+    #     ('CONTRIB', 'Contributor')
+    # )
+    # role = models.CharField(max_length=7,
+    #                         choices=ROLE_CHOICES,
+    #                         verbose_name='Role'
+    #                         )
 
     class Meta:
         unique_together = ("user", "project")
@@ -61,11 +49,11 @@ class Issue(models.Model):
     description = models.TextField(blank=True)
     tag = models.CharField(max_length=255)
     priority = models.CharField(max_length=255)
-    project = models.ForeignKey(Project,
+    project = models.ForeignKey(to=Project,
                                 on_delete=models.CASCADE
                                 )
     status = models.CharField(max_length=255)
-    author = models.ForeignKey(settings.AUTH_USER_MODEL,
+    author = models.ForeignKey(to=settings.AUTH_USER_MODEL,
                                on_delete=models.CASCADE
                                )
     # assignee = models.ForeignKey(settings.AUTH_USER_MODEL,
@@ -76,10 +64,10 @@ class Issue(models.Model):
 
 class Comment(models.Model):
     description = models.TextField(blank=True)
-    author = models.ForeignKey(settings.AUTH_USER_MODEL,
+    author = models.ForeignKey(to=settings.AUTH_USER_MODEL,
                                on_delete=models.CASCADE
                                )
-    issue = models.ForeignKey(Issue,
+    issue = models.ForeignKey(to=Issue,
                               on_delete=models.CASCADE
                               )
     created_time = models.DateTimeField(verbose_name='created time', auto_now_add=True)
