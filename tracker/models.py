@@ -3,16 +3,14 @@ from django.db import models
 
 
 class Project(models.Model):
-    title = models.CharField(max_length=100, unique=True)
-    description = models.CharField(max_length=300)
-
     TYPE_CHOICES = (
         ('BE', 'Back-end'),
         ('FE', 'Front-end'),
         ('IOS', 'IOS'),
         ('ANDROID', 'Android'),
     )
-
+    title = models.CharField(max_length=100, unique=True)
+    description = models.CharField(max_length=300)
     type = models.CharField(max_length=7, choices=TYPE_CHOICES)
     author = models.ForeignKey(to=settings.AUTH_USER_MODEL,
                                on_delete=models.RESTRICT)
@@ -31,15 +29,6 @@ class Contributor(models.Model):
                                 related_name="project_contributor"
                                 )
 
-    # ROLE_CHOICES = (
-    #     ('AUTH', 'Author'),
-    #     ('CONTRIB', 'Contributor')
-    # )
-    # role = models.CharField(max_length=7,
-    #                         choices=ROLE_CHOICES,
-    #                         verbose_name='Role'
-    #                         )
-
     class Meta:
         unique_together = ("user", "project")
 
@@ -54,11 +43,14 @@ class Issue(models.Model):
                                 )
     status = models.CharField(max_length=255)
     author = models.ForeignKey(to=settings.AUTH_USER_MODEL,
-                               on_delete=models.CASCADE
+                               on_delete=models.CASCADE,
+                               related_name='issue_author'
                                )
-    # assignee = models.ForeignKey(settings.AUTH_USER_MODEL,
-    #                              on_delete=models.CASCADE
-    #                              )
+    assignee = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                 on_delete=models.CASCADE,
+                                 related_name='issue_assignee',
+                                 default=None
+                                 )
     created_time = models.DateTimeField(verbose_name='created time', auto_now_add=True)
 
 
