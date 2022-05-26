@@ -1,9 +1,12 @@
+from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 
 from tracker.models import Project, Contributor
 
 
 class ProjectSerializer(ModelSerializer):
+    project_contributor = serializers.StringRelatedField(many=True)
+
     class Meta:
         model = Project
         fields = ['id',
@@ -11,11 +14,12 @@ class ProjectSerializer(ModelSerializer):
                   'description',
                   'type',
                   'author',
+                  'project_contributor'
                   ]
         read_only_fields = ("author",)
 
     def create(self, validated_data):
-        author = self.context.get("request", None).user  # recuperation du token
+        author = self.context.get("request", None).user  # get the access token
 
         project = Project.objects.create(
             title=validated_data["title"],
