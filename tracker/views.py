@@ -1,9 +1,8 @@
-from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
-from tracker.models import Project
-from tracker.serializers import ProjectSerializer, ProjectDetailSerializer
+from tracker.models import Project, Contributor
+from tracker.serializers import ProjectSerializer, ContributorSerializer
 
 
 class ProjectViewset(ModelViewSet):
@@ -16,7 +15,10 @@ class ProjectViewset(ModelViewSet):
         return Project.objects.filter(author=current_user)
 
 
-    def get_serializer_class(self):
-        if self.action == 'retrieve':
-            return self.detail_serializer_class
-        return super().get_serializer_class()
+class ContributorViewSet(ModelViewSet):
+    queryset = Contributor.objects.all()
+    serializer_class = ContributorSerializer
+    permission_classes = []
+
+    def get_queryset(self):
+        return Contributor.objects.all()
