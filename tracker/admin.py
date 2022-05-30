@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from tracker.models import Project
+from tracker.models import Project, Contributor
 
 
 class ProjectAdmin(admin.ModelAdmin):
@@ -8,3 +8,4 @@ class ProjectAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Project, ProjectAdmin)
+admin.site.register(Contributor)
