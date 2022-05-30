@@ -40,12 +40,12 @@ class ContributorSerializer(ModelSerializer):
                   'project',
                   )
 
-    # def validate_user(self, value):
-    #     user = self.context['request'].user
-    #     if user == value:
-    #         raise serializers.ValidationError(
-    #             "The author cannot be contributor")
-    #     return value
+    def validate_user(self, value):
+        user = self.context['request'].user
+        if user == value:
+            raise serializers.ValidationError(
+                "The project author cannot be contributor")
+        return value
 
     def create(self, validated_data):
         project = Project.objects.get(pk=self.context.get("view").kwargs["project_pk"])
