@@ -14,7 +14,8 @@ class ProjectSerializer(ModelSerializer):
                   'description',
                   'type',
                   'author',
-                  'project_contributor'
+                  'project_contributor',
+                  'issue_project',
                   ]
         read_only_fields = ("author",)
 
@@ -35,10 +36,10 @@ class ProjectSerializer(ModelSerializer):
 class ContributorSerializer(ModelSerializer):
     class Meta(object):
         model = Contributor
-        fields = ('id',
+        fields = ['id',
                   'user',
                   'project',
-                  )
+                  ]
 
     def validate_user(self, value):
         user = self.context['request'].user
@@ -86,7 +87,8 @@ class IssueSerializer(serializers.ModelSerializer):
             priority=validated_data["priority"],
             project=project,
             status=validated_data["status"],
-            author=author
+            author=author,
+            assignee=author,
         )
         issue.save()
         return issue

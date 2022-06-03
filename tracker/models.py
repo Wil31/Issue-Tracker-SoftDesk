@@ -32,6 +32,9 @@ class Contributor(models.Model):
     class Meta:
         unique_together = ("user", "project")
 
+    def __str__(self):
+        return f'{self.user}'
+
 
 class Issue(models.Model):
     PRIORITY = [
@@ -70,6 +73,9 @@ class Issue(models.Model):
                                  default=author
                                  )
     created_time = models.DateTimeField(verbose_name='created time', auto_now_add=True)
+
+    def __str__(self):
+        return self.title
 
 
 class Comment(models.Model):

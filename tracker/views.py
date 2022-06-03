@@ -37,4 +37,4 @@ class IssueViewSet(ModelViewSet):
         project = (Project.objects.filter(pk=project_id,
                                           project_contributor__user=self.request.user)
                    | Project.objects.filter(pk=project_id, author=self.request.user))
-        return project[0].issue_related
+        return project[0].issue_project.all()
