@@ -1,12 +1,14 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
-from tracker.models import Project, Contributor
-from tracker.permissions import IsAuthorOrReadOnly, IsIssueAuthorOrReadOnly
-from tracker.serializers import ProjectSerializer, ContributorSerializer, IssueSerializer
+from tracker.models import Project, Contributor, Comment
+from tracker.permissions import IsAuthorOrReadOnly, IsIssueAuthorOrReadOnly, \
+    IsCommentAuthorOrReadOnly
+from tracker.serializers import ProjectSerializer, ContributorSerializer, IssueSerializer, \
+    CommentSerializer
 
 
-class ProjectViewset(ModelViewSet):
+class ProjectViewSet(ModelViewSet):
     serializer_class = ProjectSerializer
 
     permission_classes = [IsAuthenticated, IsAuthorOrReadOnly]
@@ -38,3 +40,11 @@ class IssueViewSet(ModelViewSet):
                                           project_contributor__user=self.request.user)
                    | Project.objects.filter(pk=project_id, author=self.request.user))
         return project[0].issue_project.all()
+
+
+class CommentViewSet(ModelViewSet):
+    serializer_class = CommentSerializer
+    permission_classes = [IsAuthenticated, IsCommentAuthorOrReadOnly]
+
+    def get_queryset(self):
+        return Comment.objects.all()

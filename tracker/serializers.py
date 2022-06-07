@@ -1,11 +1,12 @@
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 
-from tracker.models import Project, Contributor, Issue
+from tracker.models import Project, Contributor, Issue, Comment
 
 
 class ProjectSerializer(ModelSerializer):
     project_contributor = serializers.StringRelatedField(many=True)
+    author = serializers.ReadOnlyField(source='author.username')
 
     class Meta:
         model = Project
@@ -34,6 +35,8 @@ class ProjectSerializer(ModelSerializer):
 
 
 class ContributorSerializer(ModelSerializer):
+    user = serializers.ReadOnlyField(source='user.username')
+
     class Meta(object):
         model = Contributor
         fields = ['id',
@@ -60,6 +63,10 @@ class ContributorSerializer(ModelSerializer):
 
 
 class IssueSerializer(serializers.ModelSerializer):
+    comment_issue = serializers.StringRelatedField(many=True)
+    author = serializers.ReadOnlyField(source='author.username')
+    assignee = serializers.ReadOnlyField(source='assignee.username')
+
     class Meta:
         model = Issue
         fields = ['id',
@@ -71,7 +78,8 @@ class IssueSerializer(serializers.ModelSerializer):
                   'status',
                   'author',
                   'assignee',
-                  'created_time'
+                  'created_time',
+                  'comment_issue'
                   ]
         read_only_fields = ['author', 'project', 'created_time']
 
@@ -92,3 +100,30 @@ class IssueSerializer(serializers.ModelSerializer):
         )
         issue.save()
         return issue
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    author = serializers.ReadOnlyField(source='author.username')
+
+    class Meta:
+        model = Comment
+        fields = ['id',
+                  'description',
+                  'author',
+                  'issue',
+                  'created_time'
+                  ]
+        read_only_fields = ['author', 'issue', 'created_time']
+
+    # def create(self, validated_data):
+    #     author = self.context.get("request", None).user
+    #
+    #     issue = Issue.object.get(pk=self.context.get("view").kwargs["issue_pk"])
+    #
+    #     comment = Comment.objects.create(
+    #         description=validated_data["description"],
+    #         author=author,
+    #         issue=issue,
+    #     )
+    #     comment.save()
+    #     return comment

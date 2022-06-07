@@ -19,3 +19,13 @@ class IsIssueAuthorOrReadOnly(permissions.BasePermission):
             return True
 
         return obj.author == request.user
+
+
+class IsCommentAuthorOrReadOnly(permissions.BasePermission):
+    message = "Only the Comment author can do this action"
+
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+
+        return obj.author == request.user

@@ -79,11 +79,16 @@ class Issue(models.Model):
 
 
 class Comment(models.Model):
-    description = models.TextField(blank=True)
+    description = models.TextField(max_length=500, unique=True, blank=False)
     author = models.ForeignKey(to=settings.AUTH_USER_MODEL,
-                               on_delete=models.CASCADE
+                               on_delete=models.RESTRICT,
+                               related_name='user_comment'
                                )
     issue = models.ForeignKey(to=Issue,
-                              on_delete=models.CASCADE
+                              on_delete=models.CASCADE,
+                              related_name='comment_issue'
                               )
     created_time = models.DateTimeField(verbose_name='created time', auto_now_add=True)
+
+    def __str__(self):
+        return self.description
