@@ -6,18 +6,19 @@ from tracker.models import Project, Contributor, Issue, Comment
 
 class ProjectSerializer(ModelSerializer):
     project_contributor = serializers.StringRelatedField(many=True)
-    author = serializers.ReadOnlyField(source='author.username')
+    author = serializers.ReadOnlyField(source="author.username")
 
     class Meta:
         model = Project
-        fields = ['id',
-                  'title',
-                  'description',
-                  'type',
-                  'author',
-                  'project_contributor',
-                  'issue_project',
-                  ]
+        fields = [
+            "id",
+            "title",
+            "description",
+            "type",
+            "author",
+            "project_contributor",
+            "issue_project",
+        ]
         read_only_fields = ("author",)
 
     def create(self, validated_data):
@@ -27,7 +28,7 @@ class ProjectSerializer(ModelSerializer):
             title=validated_data["title"],
             description=validated_data["description"],
             type=validated_data["type"],
-            author=author
+            author=author,
         )
         project.save()
 
@@ -35,28 +36,29 @@ class ProjectSerializer(ModelSerializer):
 
 
 class ContributorSerializer(ModelSerializer):
-    user = serializers.ReadOnlyField(source='user.username')
+    user = serializers.ReadOnlyField(source="user.username")
 
     class Meta(object):
         model = Contributor
-        fields = ['id',
-                  'user',
-                  'project',
-                  ]
+        fields = [
+            "id",
+            "user",
+            "project",
+        ]
 
     def validate_user(self, value):
-        user = self.context['request'].user
+        user = self.context["request"].user
         if user == value:
             raise serializers.ValidationError(
-                "The project author cannot be contributor")
+                "The project author cannot be contributor"
+            )
         return value
 
     def create(self, validated_data):
         project = Project.objects.get(pk=self.context.get("view").kwargs["project_pk"])
 
         contributor = Contributor.objects.create(
-            user=validated_data["user"],
-            project=project
+            user=validated_data["user"], project=project
         )
         contributor.save()
         return contributor
@@ -64,24 +66,25 @@ class ContributorSerializer(ModelSerializer):
 
 class IssueSerializer(serializers.ModelSerializer):
     comment_issue = serializers.StringRelatedField(many=True)
-    author = serializers.ReadOnlyField(source='author.username')
-    assignee = serializers.ReadOnlyField(source='assignee.username')
+    author = serializers.ReadOnlyField(source="author.username")
+    assignee = serializers.ReadOnlyField(source="assignee.username")
 
     class Meta:
         model = Issue
-        fields = ['id',
-                  'title',
-                  'description',
-                  'tag',
-                  'priority',
-                  'project',
-                  'status',
-                  'author',
-                  'assignee',
-                  'created_time',
-                  'comment_issue'
-                  ]
-        read_only_fields = ['author', 'project', 'created_time']
+        fields = [
+            "id",
+            "title",
+            "description",
+            "tag",
+            "priority",
+            "project",
+            "status",
+            "author",
+            "assignee",
+            "created_time",
+            "comment_issue",
+        ]
+        read_only_fields = ["author", "project", "created_time"]
 
     def create(self, validated_data):
         author = self.context.get("request", None).user
@@ -103,17 +106,12 @@ class IssueSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    author = serializers.ReadOnlyField(source='author.username')
+    author = serializers.ReadOnlyField(source="author.username")
 
     class Meta:
         model = Comment
-        fields = ['id',
-                  'description',
-                  'author',
-                  'issue',
-                  'created_time'
-                  ]
-        read_only_fields = ['author', 'issue', 'created_time']
+        fields = ["id", "description", "author", "issue", "created_time"]
+        # read_only_fields = ['author', 'issue', 'created_time']
 
     # def create(self, validated_data):
     #     author = self.context.get("request", None).user

@@ -9,14 +9,18 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('tracker', '0002_remove_project_author_user_id_and_more'),
+        ("tracker", "0002_remove_project_author_user_id_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='project',
-            name='author',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
+            model_name="project",
+            name="author",
+            field=models.ForeignKey(
+                default=1,
+                on_delete=django.db.models.deletion.CASCADE,
+                to=settings.AUTH_USER_MODEL,
+            ),
             preserve_default=False,
         ),
     ]

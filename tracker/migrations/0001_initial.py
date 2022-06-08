@@ -15,14 +15,40 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Project',
+            name="Project",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('project_id', models.IntegerField(unique=True)),
-                ('title', models.CharField(max_length=255)),
-                ('description', models.TextField(blank=True)),
-                ('type', models.CharField(choices=[('BACKEND', 'Back-end'), ('FRONTEND', 'Front-end'), ('IOS', 'iOS'), ('ANDROID', 'Android')], max_length=30, verbose_name='Type')),
-                ('author_user_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("project_id", models.IntegerField(unique=True)),
+                ("title", models.CharField(max_length=255)),
+                ("description", models.TextField(blank=True)),
+                (
+                    "type",
+                    models.CharField(
+                        choices=[
+                            ("BACKEND", "Back-end"),
+                            ("FRONTEND", "Front-end"),
+                            ("IOS", "iOS"),
+                            ("ANDROID", "Android"),
+                        ],
+                        max_length=30,
+                        verbose_name="Type",
+                    ),
+                ),
+                (
+                    "author_user_id",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]

@@ -9,43 +9,72 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('tracker', '0008_issue_assignee_alter_issue_author'),
+        ("tracker", "0008_issue_assignee_alter_issue_author"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='issue',
-            name='assignee',
-            field=models.ForeignKey(default=models.ForeignKey(on_delete=django.db.models.deletion.RESTRICT, related_name='issue_author', to=settings.AUTH_USER_MODEL), on_delete=django.db.models.deletion.RESTRICT, related_name='issue_assignee', to=settings.AUTH_USER_MODEL),
+            model_name="issue",
+            name="assignee",
+            field=models.ForeignKey(
+                default=models.ForeignKey(
+                    on_delete=django.db.models.deletion.RESTRICT,
+                    related_name="issue_author",
+                    to=settings.AUTH_USER_MODEL,
+                ),
+                on_delete=django.db.models.deletion.RESTRICT,
+                related_name="issue_assignee",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AlterField(
-            model_name='issue',
-            name='author',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.RESTRICT, related_name='issue_author', to=settings.AUTH_USER_MODEL),
+            model_name="issue",
+            name="author",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.RESTRICT,
+                related_name="issue_author",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AlterField(
-            model_name='issue',
-            name='description',
+            model_name="issue",
+            name="description",
             field=models.TextField(blank=True, max_length=500),
         ),
         migrations.AlterField(
-            model_name='issue',
-            name='priority',
-            field=models.CharField(choices=[('LO', 'Low'), ('ME', 'Medium'), ('HI', 'High')], max_length=2),
+            model_name="issue",
+            name="priority",
+            field=models.CharField(
+                choices=[("LO", "Low"), ("ME", "Medium"), ("HI", "High")], max_length=2
+            ),
         ),
         migrations.AlterField(
-            model_name='issue',
-            name='project',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='issue_project', to='tracker.project'),
+            model_name="issue",
+            name="project",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="issue_project",
+                to="tracker.project",
+            ),
         ),
         migrations.AlterField(
-            model_name='issue',
-            name='status',
-            field=models.CharField(choices=[('TODO', 'To do'), ('IN_PRO', 'In progress'), ('DONE', 'Done')], max_length=6),
+            model_name="issue",
+            name="status",
+            field=models.CharField(
+                choices=[
+                    ("TODO", "To do"),
+                    ("IN_PRO", "In progress"),
+                    ("DONE", "Done"),
+                ],
+                max_length=6,
+            ),
         ),
         migrations.AlterField(
-            model_name='issue',
-            name='tag',
-            field=models.CharField(choices=[('BUG', 'Bug'), ('IMPR', 'Improvement'), ('TASK', 'Task')], max_length=4),
+            model_name="issue",
+            name="tag",
+            field=models.CharField(
+                choices=[("BUG", "Bug"), ("IMPR", "Improvement"), ("TASK", "Task")],
+                max_length=4,
+            ),
         ),
     ]

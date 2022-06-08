@@ -9,26 +9,34 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('tracker', '0006_alter_project_description_alter_project_title_and_more'),
+        ("tracker", "0006_alter_project_description_alter_project_title_and_more"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='contributor',
-            name='permission',
+            model_name="contributor",
+            name="permission",
         ),
         migrations.RemoveField(
-            model_name='contributor',
-            name='role',
+            model_name="contributor",
+            name="role",
         ),
         migrations.AlterField(
-            model_name='contributor',
-            name='project',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='project_contributor', to='tracker.project'),
+            model_name="contributor",
+            name="project",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="project_contributor",
+                to="tracker.project",
+            ),
         ),
         migrations.AlterField(
-            model_name='contributor',
-            name='user',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='user_contributor', to=settings.AUTH_USER_MODEL),
+            model_name="contributor",
+            name="user",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="user_contributor",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
     ]

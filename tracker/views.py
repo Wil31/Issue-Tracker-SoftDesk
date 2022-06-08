@@ -2,10 +2,17 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
 from tracker.models import Project, Contributor, Comment
-from tracker.permissions import IsAuthorOrReadOnly, IsIssueAuthorOrReadOnly, \
-    IsCommentAuthorOrReadOnly
-from tracker.serializers import ProjectSerializer, ContributorSerializer, IssueSerializer, \
-    CommentSerializer
+from tracker.permissions import (
+    IsAuthorOrReadOnly,
+    IsIssueAuthorOrReadOnly,
+    IsCommentAuthorOrReadOnly,
+)
+from tracker.serializers import (
+    ProjectSerializer,
+    ContributorSerializer,
+    IssueSerializer,
+    CommentSerializer,
+)
 
 
 class ProjectViewSet(ModelViewSet):
@@ -16,9 +23,9 @@ class ProjectViewSet(ModelViewSet):
     def get_queryset(self):
         current_user = self.request.user
         contributors = Contributor.objects.filter(user=self.request.user)
-        return (Project.objects.filter(author=current_user) |
-                Project.objects.filter(project_contributor__in=contributors)) \
-            # .distinct()
+        return Project.objects.filter(author=current_user) | Project.objects.filter(
+            project_contributor__in=contributors
+        )  # .distinct()
 
 
 class ContributorViewSet(ModelViewSet):
@@ -35,10 +42,10 @@ class IssueViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated, IsIssueAuthorOrReadOnly]
 
     def get_queryset(self):
-        project_id = self.kwargs['project_pk']
-        project = (Project.objects.filter(pk=project_id,
-                                          project_contributor__user=self.request.user)
-                   | Project.objects.filter(pk=project_id, author=self.request.user))
+        project_id = self.kwargs["project_pk"]
+        project = Project.objects.filter(
+            pk=project_id, project_contributor__user=self.request.user
+        ) | Project.objects.filter(pk=project_id, author=self.request.user)
         return project[0].issue_project.all()
 
 

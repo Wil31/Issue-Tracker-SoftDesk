@@ -9,23 +9,31 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('tracker', '0009_alter_issue_assignee_alter_issue_author_and_more'),
+        ("tracker", "0009_alter_issue_assignee_alter_issue_author_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='comment',
-            name='author',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.RESTRICT, related_name='user_comment', to=settings.AUTH_USER_MODEL),
+            model_name="comment",
+            name="author",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.RESTRICT,
+                related_name="user_comment",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AlterField(
-            model_name='comment',
-            name='description',
+            model_name="comment",
+            name="description",
             field=models.TextField(max_length=500, unique=True),
         ),
         migrations.AlterField(
-            model_name='comment',
-            name='issue',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='comment_issue', to='tracker.issue'),
+            model_name="comment",
+            name="issue",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="comment_issue",
+                to="tracker.issue",
+            ),
         ),
     ]
