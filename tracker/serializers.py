@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 
@@ -45,20 +46,23 @@ class ContributorSerializer(ModelSerializer):
             "user",
             "project",
         ]
+        read_only_fields = ["project"]
 
-    def validate_user(self, value):
+    def create(self, validated_data):
+        User = get_user_model()
         user = self.context["request"].user
-        if user == value:
+
+        project = Project.objects.get(pk=self.context.get("view").kwargs["project_pk"])
+        contributor_username = self.context['request'].POST.get('user', '[]')
+        contributor_user = User.objects.get(username=contributor_username)
+
+        if user == contributor_user:
             raise serializers.ValidationError(
                 "The project author cannot be contributor"
             )
-        return value
-
-    def create(self, validated_data):
-        project = Project.objects.get(pk=self.context.get("view").kwargs["project_pk"])
 
         contributor = Contributor.objects.create(
-            user=validated_data["user"], project=project
+            user=contributor_user, project=project
         )
         contributor.save()
         return contributor
