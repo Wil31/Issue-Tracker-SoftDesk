@@ -6,6 +6,7 @@ from tracker.permissions import (
     IsAuthorOrReadOnly,
     IsIssueAuthorOrReadOnly,
     IsCommentAuthorOrReadOnly,
+    IsProjectContributor,
 )
 from tracker.serializers import (
     ProjectSerializer,
@@ -25,7 +26,7 @@ class ProjectViewSet(ModelViewSet):
         contributors = Contributor.objects.filter(user=self.request.user)
         return Project.objects.filter(author=current_user) | Project.objects.filter(
             project_contributor__in=contributors
-        )  # .distinct()
+        )
 
 
 class ContributorViewSet(ModelViewSet):
@@ -39,7 +40,7 @@ class ContributorViewSet(ModelViewSet):
 
 class IssueViewSet(ModelViewSet):
     serializer_class = IssueSerializer
-    permission_classes = [IsAuthenticated, IsIssueAuthorOrReadOnly]
+    permission_classes = [IsAuthenticated, IsIssueAuthorOrReadOnly, IsProjectContributor]
 
     def get_queryset(self):
         project_id = self.kwargs["project_pk"]

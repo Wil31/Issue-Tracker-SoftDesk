@@ -1,5 +1,7 @@
 from rest_framework import permissions
 
+from tracker.models import Project, Contributor
+
 
 class IsAuthorOrReadOnly(permissions.BasePermission):
     message = "Only the Project author can do this action"
@@ -29,3 +31,19 @@ class IsCommentAuthorOrReadOnly(permissions.BasePermission):
             return True
 
         return obj.author == request.user
+
+
+class IsProjectContributor(permissions.BasePermission):
+    message = "Only Project contributors or authors can create Issues !"
+
+    def has_permission(self, request, view):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        else:
+            project = Project.objects.get(pk=view.kwargs["project_pk"])
+            user = request.user
+
+            if user == project.author or \
+                    Contributor.objects.filter(user=user,
+                                               project=project).exists():
+                return True
