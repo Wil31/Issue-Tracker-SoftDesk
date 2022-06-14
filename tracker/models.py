@@ -50,7 +50,7 @@ class Issue(models.Model):
     tag = models.CharField(max_length=4, choices=TAG)
     priority = models.CharField(max_length=2, choices=PRIORITY)
     project = models.ForeignKey(
-        to=Project, on_delete=models.CASCADE, related_name="issue_project"
+        to=Project, on_delete=models.CASCADE, related_name="issue_project", blank=True
     )
     status = models.CharField(max_length=6, choices=STATUT)
     author = models.ForeignKey(
@@ -61,8 +61,7 @@ class Issue(models.Model):
     assignee = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.RESTRICT,
-        related_name="issue_assignee",
-        default=author,
+        related_name="issue_assignee"
     )
     created_time = models.DateTimeField(verbose_name="created time", auto_now_add=True)
 
