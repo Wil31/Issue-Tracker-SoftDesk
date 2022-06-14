@@ -90,10 +90,37 @@ class IssueSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["author", "project", "created_time"]
 
-    def create(self, validated_data):
-        author = self.context.get("request", None).user
-
+    def validate(self, data):
+        """Check if assignee is a project contributor"""
+        User = get_user_model()
         project = Project.objects.get(pk=self.context.get("view").kwargs["project_pk"])
+        assignee_username = self.context['request'].POST.get('assignee', '[]')
+        if assignee_username != "":
+            assignee = User.objects.get(username=assignee_username)
+            print(assignee)
+            print(project.author)
+
+            if assignee == project.author:
+                return super().validate(data)
+            elif not Contributor.objects.filter(user=assignee,
+                                                project=project).exists():
+                error_message = f"The assignee {str(assignee)} is not a contributor" \
+                                f" for the project "
+                raise serializers.ValidationError(error_message)
+        return super().validate(data)
+
+    def create(self, validated_data):
+        User = get_user_model()
+
+        author = self.context.get("request", None).user
+        project = Project.objects.get(pk=self.context.get("view").kwargs["project_pk"])
+
+        assignee_username = self.context['request'].POST.get('assignee', '[]')
+
+        if assignee_username != "":
+            assignee = User.objects.get(username=assignee_username)
+        else:
+            assignee = author
 
         issue = Issue.objects.create(
             title=validated_data["title"],
@@ -103,10 +130,30 @@ class IssueSerializer(serializers.ModelSerializer):
             project=project,
             status=validated_data["status"],
             author=author,
-            assignee=author,
+            assignee=assignee,
         )
         issue.save()
         return issue
+
+    def update(self, instance, validated_data):
+        User = get_user_model()
+
+        author = self.context.get("request", None).user
+
+        assignee_username = self.context['request'].POST.get('assignee', '[]')
+
+        if assignee_username != "":
+            instance.assignee = User.objects.get(username=assignee_username)
+        else:
+            instance.assignee = author
+
+        instance.title = validated_data["title"]
+        instance.description = validated_data["description"]
+        instance.tag = validated_data["tag"]
+        instance.priority = validated_data["priority"]
+        instance.status = validated_data["status"]
+        instance.save()
+        return instance
 
 
 class CommentSerializer(serializers.ModelSerializer):
