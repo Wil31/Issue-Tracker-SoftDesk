@@ -162,17 +162,17 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ["id", "description", "author", "issue", "created_time"]
-        # read_only_fields = ['author', 'issue', 'created_time']
+        read_only_fields = ['author', 'issue', 'created_time']
 
-    # def create(self, validated_data):
-    #     author = self.context.get("request", None).user
-    #
-    #     issue = Issue.object.get(pk=self.context.get("view").kwargs["issue_pk"])
-    #
-    #     comment = Comment.objects.create(
-    #         description=validated_data["description"],
-    #         author=author,
-    #         issue=issue,
-    #     )
-    #     comment.save()
-    #     return comment
+    def create(self, validated_data):
+        author = self.context.get("request", None).user
+        issue_id = self.context.get("view").kwargs['issues_pk']
+        issue = Issue.objects.get(pk=issue_id)
+
+        comment = Comment.objects.create(
+            description=validated_data["description"],
+            author=author,
+            issue=issue,
+        )
+        comment.save()
+        return comment
