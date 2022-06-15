@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import permissions
 
 from tracker.models import Project, Contributor
@@ -34,16 +35,14 @@ class IsCommentAuthorOrReadOnly(permissions.BasePermission):
 
 
 class IsProjectContributor(permissions.BasePermission):
-    message = "Only Project contributors or authors can create Issues !"
+    message = "Only Project contributors or authors can do this action"
 
     def has_permission(self, request, view):
-        if request.method in permissions.SAFE_METHODS:
-            return True
-        else:
-            project = Project.objects.get(pk=view.kwargs["project_pk"])
-            user = request.user
+        project = get_object_or_404(Project, pk=view.kwargs["project_pk"])
+        user = request.user
 
-            if user == project.author or \
-                    Contributor.objects.filter(user=user,
-                                               project=project).exists():
-                return True
+        if (
+            user == project.author
+            or Contributor.objects.filter(user=user, project=project).exists()
+        ):
+            return True

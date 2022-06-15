@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 
@@ -23,7 +24,7 @@ class ProjectSerializer(ModelSerializer):
         read_only_fields = ("author",)
 
     def create(self, validated_data):
-        author = self.context.get("request", None).user  # get the access token
+        author = self.context.get("request", None).user
 
         project = Project.objects.create(
             title=validated_data["title"],
@@ -53,7 +54,7 @@ class ContributorSerializer(ModelSerializer):
         user = self.context["request"].user
 
         project = Project.objects.get(pk=self.context.get("view").kwargs["project_pk"])
-        contributor_username = self.context['request'].POST.get('user', '[]')
+        contributor_username = self.context["request"].POST.get("user", "[]")
         contributor_user = User.objects.get(username=contributor_username)
 
         if user == contributor_user:
@@ -61,9 +62,7 @@ class ContributorSerializer(ModelSerializer):
                 "The project author cannot be contributor"
             )
 
-        contributor = Contributor.objects.create(
-            user=contributor_user, project=project
-        )
+        contributor = Contributor.objects.create(user=contributor_user, project=project)
         contributor.save()
         return contributor
 
@@ -94,18 +93,21 @@ class IssueSerializer(serializers.ModelSerializer):
         """Check if assignee is a project contributor"""
         User = get_user_model()
         project = Project.objects.get(pk=self.context.get("view").kwargs["project_pk"])
-        assignee_username = self.context['request'].POST.get('assignee', '[]')
+        assignee_username = self.context["request"].POST.get("assignee", "[]")
         if assignee_username != "":
-            assignee = User.objects.get(username=assignee_username)
+            assignee = get_object_or_404(User, username=assignee_username)
             print(assignee)
             print(project.author)
 
             if assignee == project.author:
                 return super().validate(data)
-            elif not Contributor.objects.filter(user=assignee,
-                                                project=project).exists():
-                error_message = f"The assignee {str(assignee)} is not a contributor" \
-                                f" for the project "
+            elif not Contributor.objects.filter(
+                user=assignee, project=project
+            ).exists():
+                error_message = (
+                    f"The assignee {str(assignee)} is not a contributor"
+                    f" for the project "
+                )
                 raise serializers.ValidationError(error_message)
         return super().validate(data)
 
@@ -115,10 +117,10 @@ class IssueSerializer(serializers.ModelSerializer):
         author = self.context.get("request", None).user
         project = Project.objects.get(pk=self.context.get("view").kwargs["project_pk"])
 
-        assignee_username = self.context['request'].POST.get('assignee', '[]')
+        assignee_username = self.context["request"].POST.get("assignee", "[]")
 
         if assignee_username != "":
-            assignee = User.objects.get(username=assignee_username)
+            assignee = get_object_or_404(User, username=assignee_username)
         else:
             assignee = author
 
@@ -140,7 +142,7 @@ class IssueSerializer(serializers.ModelSerializer):
 
         author = self.context.get("request", None).user
 
-        assignee_username = self.context['request'].POST.get('assignee', '[]')
+        assignee_username = self.context["request"].POST.get("assignee", "[]")
 
         if assignee_username != "":
             instance.assignee = User.objects.get(username=assignee_username)
@@ -162,12 +164,12 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ["id", "description", "author", "issue", "created_time"]
-        read_only_fields = ['author', 'issue', 'created_time']
+        read_only_fields = ["author", "issue", "created_time"]
 
     def create(self, validated_data):
         author = self.context.get("request", None).user
-        issue_id = self.context.get("view").kwargs['issues_pk']
-        issue = Issue.objects.get(pk=issue_id)
+        issue_id = self.context.get("view").kwargs["issues_pk"]
+        issue = get_object_or_404(Issue, pk=issue_id)
 
         comment = Comment.objects.create(
             description=validated_data["description"],

@@ -61,7 +61,7 @@ class Issue(models.Model):
     assignee = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.RESTRICT,
-        related_name="issue_assignee"
+        related_name="issue_assignee",
     )
     created_time = models.DateTimeField(verbose_name="created time", auto_now_add=True)
 
