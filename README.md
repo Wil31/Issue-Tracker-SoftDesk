@@ -1,18 +1,17 @@
 # Issue-Tracker
 
-Application permettant de remonter et suivre des problèmes techniques (issue
-tracking system).
-Cette solution s’adresse à des entreprises clientes, en B2B.
+Issue-Tracker est une application permettant de remonter et suivre des 
+problèmes techniques (issue tracking system).
 
 Projet consistant à créer une API Restful pour la société SoftDesk.
-Cette entreprise veut créer cette API afin de mettre les différents
-intervenants d'une équipe de développement, afin qu'ils puissent échanger sur
-les problèmes techniques qu'ils rencontrent.
+Cette entreprise veut créer une API afin de permettre aux différents
+intervenants d'une équipe de développement, d'échanger sur les problèmes 
+techniques qu'ils rencontrent.
 
 La conception de cette API doit utiliser le langage Python et Django Rest
 Framework.
 
-L'API doit respecter les directives suivantes :
+L'API doit respecter les contraintes suivantes :
 
 * L'utilisateur doit pouvoir créer un compte et se connecter.
 * L'accès global à l'API requiert une authentification.
