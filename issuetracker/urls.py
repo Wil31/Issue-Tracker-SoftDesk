@@ -25,10 +25,6 @@ users_router = routers.NestedSimpleRouter(router, "projects", lookup="user")
 issues_router = routers.NestedSimpleRouter(projects_router, "issues", lookup="issues")
 issues_router.register("comments", CommentViewSet, basename="comments")
 
-# comments_router = routers.NestedSimpleRouter(
-#     issues_router, "comments", lookup="comments"
-# )
-
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api-auth/", include("rest_framework.urls")),
@@ -38,5 +34,4 @@ urlpatterns = [
     path("api/", include(projects_router.urls)),
     path("api/", include(users_router.urls)),
     path("api/", include(issues_router.urls)),
-    # path("api/", include(comments_router.urls)),
 ]
