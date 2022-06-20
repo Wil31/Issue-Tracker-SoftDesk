@@ -1,3 +1,5 @@
+[![forthebadge](https://forthebadge.com/images/badges/made-with-python.svg)](https://forthebadge.com)
+
 # Issue-Tracker
 
 Issue-Tracker est une application permettant de remonter et suivre des 
