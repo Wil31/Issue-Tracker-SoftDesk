@@ -51,7 +51,7 @@ L'API doit respecter les contraintes suivantes :
 
 * Lancez le serveur depuis le terminal avec la
   commande `py.exe manage.py runserver`
-* Entrez l'adresse suivante dans un navigateur : [http:/127.0.0.1:8000/]()
+* Utilisez une application comme Postman pour communiquer avec les endpoints.
 
 ### 4 - Tester l'API
 
